@@ -1,0 +1,28 @@
+# top two salaries : 
+
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col,dense_rank,avg,sum
+
+
+spark = SparkSession.builder.getOrCreate()
+
+data = [
+    ("John", "HR", 5000),
+    ("Maya", "HR", 4500),
+    ("Tom", "HR", 5000),
+    ("Lily", "IT", 8000),
+    ("Ben", "IT", 7500),
+    ("Ryan", "IT", 7000),
+    ("Alex", "SALES", 3000),
+    ("Sam", "SALES", 2800),
+    ("Ella", "SALES", 3000)
+]
+
+columns = ["employee", "department", "salary"]
+
+df = spark.createDataFrame(data, columns)
+
+w=Window.partitionBy(col('department')).orderBy(col('salary').desc())
+res=df.withColumn('rank',dense_rank().over(w)).filter(col('rank')<=2)
+
+res.show()
