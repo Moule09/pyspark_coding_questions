@@ -1,0 +1,50 @@
+Problem Statement : Single Colum having Comma seperated data.we have to seperate the data into seperate rows
+
+Sample Input : 
++-----+----------------+
+|name |sports          |
++-----+----------------+
+|Alice|Badminton,Tennis|
+|Bob  |Cricket,Football|
+|John |Chess           |
++-----+----------------+
+
+Sample Output : 
+
+Example : 
++-----+----------+
+|name |sport     |
++-----+----------+
+|Alice|Badminton |
+|Alice|Tennis    |
+|Bob  |Cricket   |
+|Bob  |Football  |
+|John |Chess     |
++-----+----------+
+
+Solution: 
+
+# interview Question
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col,split,explode 
+spark = SparkSession.builder.getOrCreate()
+
+data = [
+    ("Alice", "Badminton,Tennis"),
+    ("Bob", "Cricket,Football"),
+    ("John", "Chess"),
+    ("Maya", "Hockey,Cricket,Tennis")
+]
+columns = ["name", "sports"]
+df = spark.createDataFrame(data, columns)
+
+df1=df.withColumn('sports',explode(split(col('sports'),",")))
+df1.show()
+
+
+
+
+Note : Dataframe May be differ
+
+
+Ref : https://www.youtube.com/watch?v=EsCv8c0l9XQ&list=PLNRxk1s77zfj2M2MuCuEPy_k25bUbv1Py&index=1
