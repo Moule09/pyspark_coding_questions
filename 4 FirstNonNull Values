@@ -1,0 +1,35 @@
+Problem : Find the First Non Null Values
+
+Dataframe:
+
+
+data=[('Goa', ' ', 'AP'),('', 'AP', None), (None, '', 'Bglr')]
+columns=["city1", "city2", "city3"]
+df=spark.createDataFrame(data, columns)
+
+
+Sample Output : 
+
++-----+-----+-----+------------+
+|city1|city2|city3|firstnonnull|
++-----+-----+-----+------------+
+|  Goa|     |   AP|         Goa|
+|     |   AP| null|          AP|
+| null|     | Bglr|        Bglr|
++-----+-----+-----+------------+
+
+
+
+
+Solution 
+from pyspark.sql.functions import coalesce,col,when,trim
+data=[('Goa', ' ', 'AP'),('', 'AP', None), (None, '', 'Bglr')]
+columns=["city1", "city2", "city3"]
+df=spark.createDataFrame(data, columns)
+df1=df.withColumn('firstnonnull',coalesce(when(trim(col('city1'))=='',None).otherwise(col('city1')),
+                                          when(trim(col('city2'))=='',None).otherwise(col('city2')),
+                                          when(trim(col('city3'))=='',None).otherwise(col('city3'))))
+df1.show()
+
+
+
